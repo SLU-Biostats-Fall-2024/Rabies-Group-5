@@ -35,13 +35,19 @@ rabies |> mutate(Percent_pos = (Positive.Samples/Number.of.Samples)*100)
 3.  In what year was the highest total number of sample submissions received? (Hint: you might want the `sum()` function)
 
 ```{r}
-rabies |> group_by(Received.Year) |> sum(Number.of.Samples)
+rabies |> group_by(Received.Year) |>
+  summarise(
+    total_samples = sum(Number.of.Samples)
+  ) |> View()
 ```
 
 4.  In what year and in what county was the highest positive number of samples received?
 
 ```{r}
-rabies |> sum(Positive.Samples)
+rabies |> group_by(Received.Year, County.Name) |>
+  summarise(
+    total_samples1 = sum(Positive.Samples)
+  ) |> View()
 ```
 
 
