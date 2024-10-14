@@ -4,14 +4,27 @@ format: html
 editor: visual
 ---
 
+10/14/2024
+## Rabies project
+
+You are receiving a dataset from the New York State Department of Health that shows test results for specimens submitted to be tested for rabies.
+
+Your goals are twofold:
+
+-   To practice using the material from Chapter 3 of GSWR and
+-   To learn something about rabies in New York.
+
+
 ## Set things up and read in the data
 
 ```{r}
-rm(list=ls())
-library(here)
-library(tidyverse)
-library(dplyr)
+rm (list =ls()) # clear environment
+library (tidyverse)
+library (here)
+```
 
+Now read in the data and name it as an object called `rabies`.
+```{r}
 rabies <- read.csv(here("Data", "Rabies_Laboratory_Submissions.csv"))
 ```
 
@@ -20,12 +33,15 @@ rabies <- read.csv(here("Data", "Rabies_Laboratory_Submissions.csv"))
 1.  After you read in all of the data, create a new data frame called rabies that includes just the first 7 columns (omit latitude, longitude and geocode information) from the original dataset.
 
 ```{r}
+
 rabies |> select(1:7)
+
 ```
 
 2.  Create a new column in your dataset called "Percent_pos" and set it equal to (number of positive samples / number of samples)\*100.
 
 ```{r}
+
 rabies |> mutate(Percent_pos = (Positive.Samples/Number.of.Samples)*100)
 ```
 
@@ -53,7 +69,23 @@ rabies |> group_by(Received.Year, County.Name) |>
 
 5.  How many rows of data are there that include submissions from bats for which the samples were positive for rabies? For which the samples were not positive for rabies?
 
+```{r}
+rabies %>%
+   filter (Animal.Classification == "Bat", Positive.Samples >= 1) 
+
+# returns 1,101 rows
+```
+
 6.  How many animal types were there for which, in instances in which there were more than 4 samples submitted at a time, the percent of positive samples was greater than 50%?
+
+```{r}
+# find animal types, when >4 samples, when %pos >50%
+rabies %>%
+  group_by(Animal.Classification)%>%
+    filter (Number.of.Samples >=4 , Positive.Samples/Number.of.Samples > 0.5) 
+
+# returns 3 groups 
+```
 
 7.  Create a new dataset that includes only data from St. Lawrence County and name it SLC. Next, calculate, by Animal.Classification, the total number of submissions per year, the total number of positive submissions per year, and then the percent positive per year based on those two totals. Save your results in a new data frame called SLC_animals.
 
